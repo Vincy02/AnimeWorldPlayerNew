@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         AnimeWorldPlayerNew
 // @namespace    AWPN
-// @version      1.0.0
+// @version      1.0.1
 // @description  AWPN è un userscript che sostituisce il player nativo di AnimeWorld con una nuova interfaccia elegante in stile YouTube. Include scorciatoie da tastiera, auto-resume e molto altro.
 // @author       Vincy02
 // @match        *://www.animeworld.ac/play/*
@@ -255,7 +255,7 @@
             this.video.src = this.url;
             this.video.autoplay = false;
             this.video.disableRemotePlayback = true;
-            this.video.disablePictureInPicture = true; // We use our own custom button if needed
+            // this.video.disablePictureInPicture removed to allow custom PiP button to work
 
             // Overlays
             this.gradTop = createEl('div', 'aw-gradient-top');
@@ -641,12 +641,16 @@
 
                 if (k === '?') { this.kbdOverlay.classList.add('show'); return; }
 
-                if ([' ', 'k', 'j', 'l', 'f', 'm', 'i', 'arrowright', 'arrowleft', 'arrowup', 'arrowdown'].includes(k) || (!isNaN(k) && k.trim() !== '')) {
+                if ([' ', 'k', 'j', 'l', 'f', 'm', 'i', 'n', 'arrowright', 'arrowleft', 'arrowup', 'arrowdown'].includes(k) || (!isNaN(k) && k.trim() !== '')) {
                     e.preventDefault();
                     if (k === ' ' || k === 'k') toggle();
                     else if (k === 'f') this.btnFs.click();
-                    else if (k === 'm') this.btnVol.click();
+                    else if (k === 'm') {
+                        this.btnVol.click();
+                        this.flashAction(v.muted ? ICONS.vol_off : ICONS.vol_up, v.muted ? 'Muto' : Math.round(this.volSlider.value * 100) + '%');
+                    }
                     else if (k === 'i') this.btnPip.click();
+                    else if (k === 'n') this.btnNext.click();
                     else if (k === 'l') { v.currentTime += 10; this.flashAction(ICONS.next, '+10s'); }
                     else if (k === 'j') { v.currentTime -= 10; this.flashAction('<svg viewBox="0 0 24 24"><path d="M18 18l-8.5-6L18 6v12zM8 6v12h-2V6h2z"/></svg>', '-10s'); }
                     else if (k === 'arrowright') { v.currentTime += 5; this.flashAction(ICONS.next, '+5s'); }
